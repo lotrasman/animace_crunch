@@ -1,0 +1,15 @@
+# rendered video and extracted stills (regenerate with the commands in CLAUDE.md)
+renders/
+
+# HyperFrames state, caches and QC frames
+.hyperframes/
+.qc/
+.media/
+node_modules/
+
+# duplicate copies of the reference images (originals live in reference/)
+Screenshot *.jpg
+
+# OS noise
+Thumbs.db
+.DS_Store

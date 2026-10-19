@@ -1,0 +1,1167 @@
+<!doctype html>
+<html lang="cs">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <title>Protein Crunch Mix – intro</title>
+    <script src="vendor/gsap.min.js"></script>
+    <style>
+      @font-face {
+        font-family: "Nunito";
+        src: url("fonts/Nunito-Variable.ttf") format("truetype");
+        font-weight: 200 1000;
+        font-style: normal;
+        font-display: block;
+      }
+
+      :root {
+        --blue: #1f2fb0;
+        --navy: #121a6b;
+        --gold: #ffc928;
+        --orange: #f28c18;
+        --bg1: #f2a23a;
+        --bg2: #b5581b;
+      }
+
+      body {
+        margin: 0;
+        background: #b5581b;
+        color: #fff;
+        font-family: "Nunito", sans-serif;
+        font-weight: 900;
+      }
+
+      #root {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: #b5581b;
+      }
+
+      #camera,
+      #punch {
+        position: absolute;
+        inset: 0;
+        transform-origin: 50% 50%;
+      }
+
+      /* ---------- background ---------- */
+      #bg {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, #f6b24a 0%, var(--bg1) 28%, #d8822c 62%, var(--bg2) 100%);
+      }
+      #bg-glow {
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(ellipse 55% 50% at 50% 55%, rgba(255, 214, 120, 0.55) 0%, rgba(255, 190, 90, 0) 70%);
+      }
+      #rays-wrap {
+        position: absolute;
+        left: -1300px;
+        top: -1300px;
+        width: 2600px;
+        height: 2600px;
+      }
+      #rays {
+        position: absolute;
+        inset: 0;
+        border-radius: 50%;
+        background: repeating-conic-gradient(
+          from 0deg at 50% 50%,
+          rgba(255, 240, 190, 0) 0deg,
+          rgba(255, 240, 190, 0.28) 3deg,
+          rgba(255, 240, 190, 0) 7deg,
+          rgba(255, 240, 190, 0) 13deg
+        );
+        -webkit-mask-image: radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.6) 45%, rgba(0, 0, 0, 0) 72%);
+        mask-image: radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.6) 45%, rgba(0, 0, 0, 0) 72%);
+        transform-origin: 50% 50%;
+      }
+      #vignette {
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(ellipse 70% 65% at 50% 48%, rgba(80, 25, 0, 0) 45%, rgba(70, 20, 0, 0.42) 100%);
+      }
+
+      .float-layer {
+        position: absolute;
+        inset: 0;
+      }
+      .pc {
+        position: absolute;
+        left: 0;
+        top: 0;
+        will-change: transform;
+      }
+      .pc svg {
+        display: block;
+        width: 100%;
+        height: 100%;
+        overflow: visible;
+      }
+      .la {
+        position: absolute;
+        left: 0;
+        top: 0;
+        will-change: transform;
+      }
+      .la svg {
+        display: block;
+        width: 100%;
+        height: 100%;
+        overflow: visible;
+      }
+      #float-far .la {
+        filter: blur(1.5px);
+        opacity: 0.42;
+      }
+      #float-near .la {
+        opacity: 0.6;
+      }
+      .spark {
+        position: absolute;
+        left: 0;
+        top: 0;
+        border-radius: 50%;
+        background: radial-gradient(circle at 45% 40%, rgba(255, 240, 190, 1) 0%, rgba(255, 201, 40, 0.8) 40%, rgba(255, 170, 40, 0) 70%);
+        will-change: transform;
+      }
+
+      /* ---------- clips ---------- */
+      .clip {
+        position: absolute;
+        inset: 0;
+      }
+      .center {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .headline {
+        margin: 0;
+        text-align: center;
+        line-height: 1.02;
+        text-shadow: 0 6px 0 rgba(90, 30, 0, 0.18), 0 22px 50px rgba(80, 25, 0, 0.45);
+        letter-spacing: -0.01em;
+      }
+      .headline .line {
+        display: block;
+      }
+      .gold-text {
+        background: linear-gradient(180deg, #ffe26a 0%, var(--gold) 45%, var(--orange) 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        text-shadow: none;
+        filter: drop-shadow(0 14px 30px rgba(80, 25, 0, 0.45));
+      }
+
+      /* scene 1 */
+      #s1-fly {
+        position: absolute;
+        inset: 0;
+      }
+      #s1-fly .pc {
+        left: 960px;
+        top: 540px;
+      }
+      #s1-halo {
+        position: absolute;
+        left: 160px;
+        top: 140px;
+        width: 1600px;
+        height: 800px;
+        border-radius: 50%;
+        background: radial-gradient(ellipse at 50% 50%, rgba(70, 20, 0, 0.62) 0%, rgba(70, 20, 0, 0.45) 30%, rgba(70, 20, 0, 0) 70%);
+      }
+      #s1-h {
+        font-size: 176px;
+        max-width: 1536px;
+      }
+
+      /* product layer */
+      #product {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 1920px;
+        height: 1080px;
+        transform-origin: 960px 580px;
+      }
+      .pouch-wrap {
+        position: absolute;
+        will-change: transform;
+      }
+      .pouch-wrap img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        filter: drop-shadow(0 34px 38px rgba(60, 18, 0, 0.5));
+      }
+      .sweep {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+        -webkit-mask-size: 100% 100%;
+        mask-size: 100% 100%;
+        -webkit-mask-repeat: no-repeat;
+        mask-repeat: no-repeat;
+        pointer-events: none;
+      }
+      .sweep-150 {
+        -webkit-mask-image: url("assets/pouch-150.png");
+        mask-image: url("assets/pouch-150.png");
+      }
+      .sweep-bar {
+        position: absolute;
+        left: 0;
+        top: -20%;
+        width: 36%;
+        height: 140%;
+        background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 250, 225, 0.75) 50%, rgba(255, 255, 255, 0) 100%);
+        transform-origin: 50% 50%;
+        mix-blend-mode: screen;
+      }
+      #pouchA {
+        left: 706px;
+        top: 220px;
+        width: 508px;
+        height: 720px;
+        z-index: 2;
+      }
+      #pack40A {
+        left: 1140px;
+        top: 550px;
+        width: 277px;
+        height: 390px;
+        z-index: 1;
+      }
+      #burst-field {
+        position: absolute;
+        left: 960px;
+        top: 600px;
+        width: 0;
+        height: 0;
+        z-index: 3;
+      }
+      .particle {
+        position: absolute;
+        left: 0;
+        top: 0;
+        border-radius: 50%;
+        opacity: 0;
+        will-change: transform, opacity;
+      }
+
+      /* scene 3 facts */
+      #facts {
+        position: absolute;
+        inset: 0;
+      }
+      .stage {
+        position: absolute;
+        left: 1000px;
+        top: 390px;
+        width: 728px;
+        height: 500px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        transform-origin: 50% 50%;
+      }
+      .icon-big {
+        width: 150px;
+        height: 150px;
+        margin-bottom: 18px;
+      }
+      .icon-big svg,
+      .icon-sm svg,
+      .check svg {
+        display: block;
+        width: 100%;
+        height: 100%;
+      }
+      .numline {
+        font-size: 200px;
+        line-height: 1;
+        display: flex;
+        align-items: baseline;
+        justify-content: center;
+        text-shadow: 0 10px 40px rgba(80, 25, 0, 0.4);
+      }
+      .num {
+        display: inline-block;
+        font-variant-numeric: tabular-nums;
+        min-width: 1.6em;
+        text-align: right;
+        transform-origin: 100% 85%;
+      }
+      .unit {
+        font-size: 120px;
+        margin-left: 0.14em;
+      }
+      .factword {
+        font-size: 96px;
+        line-height: 1.05;
+        margin-top: 6px;
+        text-shadow: 0 8px 30px rgba(80, 25, 0, 0.4);
+      }
+      .per {
+        font-size: 34px;
+        font-weight: 900;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--navy);
+        background: linear-gradient(180deg, #ffe26a 0%, var(--gold) 50%, #f9b321 100%);
+        padding: 8px 26px 6px;
+        border-radius: 999px;
+        margin-top: 22px;
+        box-shadow: 0 8px 20px rgba(80, 25, 0, 0.3);
+      }
+      #stage3 .factword {
+        font-size: 84px;
+        max-width: 700px;
+      }
+
+      #list {
+        position: absolute;
+        left: 1000px;
+        top: 110px;
+        width: 728px;
+      }
+      .row {
+        position: absolute;
+        left: 0;
+        width: 728px;
+        height: 100px;
+        display: flex;
+        align-items: center;
+        gap: 22px;
+        transform-origin: 50% 50%;
+      }
+      .icon-sm {
+        width: 78px;
+        height: 78px;
+        flex: 0 0 78px;
+      }
+      .rowtext {
+        font-size: 46px;
+        line-height: 1.05;
+        flex: 1 1 auto;
+        text-shadow: 0 4px 18px rgba(80, 25, 0, 0.35);
+      }
+      .rowtext small {
+        display: inline-block;
+        font-size: 22px;
+        font-weight: 900;
+        color: var(--navy);
+        background: linear-gradient(180deg, #ffe26a 0%, var(--gold) 50%, #f9b321 100%);
+        padding: 5px 14px 3px;
+        border-radius: 999px;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        margin-left: 14px;
+        vertical-align: middle;
+        line-height: 1.1;
+      }
+      .check {
+        width: 54px;
+        height: 54px;
+        flex: 0 0 54px;
+      }
+
+      /* scene 4 */
+      #flash {
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(circle at 50% 50%, rgba(255, 245, 210, 0.95) 0%, rgba(255, 230, 170, 0) 65%);
+        opacity: 0;
+      }
+      #slogan {
+        text-align: center;
+      }
+      #slog1,
+      #slog2,
+      #slog3 {
+        font-size: 168px;
+        line-height: 1.02;
+      }
+      #slog3 {
+        margin-top: 4px;
+      }
+      #slog-sub {
+        font-size: 56px;
+        font-weight: 700;
+        margin-top: 34px;
+        letter-spacing: 0.01em;
+        text-shadow: 0 6px 24px rgba(80, 25, 0, 0.4);
+      }
+      #s4-halo {
+        position: absolute;
+        left: 110px;
+        top: 90px;
+        width: 1700px;
+        height: 900px;
+        border-radius: 50%;
+        background: radial-gradient(ellipse at 50% 50%, rgba(70, 20, 0, 0.62) 0%, rgba(70, 20, 0, 0.45) 30%, rgba(70, 20, 0, 0) 70%);
+      }
+      #s3-halo {
+        position: absolute;
+        left: 820px;
+        top: 20px;
+        width: 1100px;
+        height: 1040px;
+        border-radius: 50%;
+        background: radial-gradient(ellipse at 50% 50%, rgba(70, 20, 0, 0.6) 0%, rgba(70, 20, 0, 0.4) 35%, rgba(70, 20, 0, 0) 72%);
+      }
+      #s5-halo {
+        position: absolute;
+        left: 60px;
+        top: 60px;
+        width: 1100px;
+        height: 960px;
+        border-radius: 50%;
+        background: radial-gradient(ellipse at 50% 50%, rgba(70, 20, 0, 0.6) 0%, rgba(70, 20, 0, 0.4) 35%, rgba(70, 20, 0, 0) 72%);
+      }
+
+      /* scene 5 end card */
+      #end-left {
+        position: absolute;
+        left: 192px;
+        top: 0;
+        width: 860px;
+        height: 1080px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+      #wordmark {
+        transform: skewX(-6deg);
+        text-align: center;
+        line-height: 0.92;
+      }
+      #wordmark .wl {
+        display: block;
+        text-shadow: 0 8px 0 rgba(90, 30, 0, 0.16), 0 22px 46px rgba(80, 25, 0, 0.45);
+      }
+      #wordmark .wl.gold-text {
+        text-shadow: none;
+      }
+      #wm1,
+      #wm3 {
+        font-size: 118px;
+      }
+      #wm2 {
+        font-size: 184px;
+        letter-spacing: 0.01em;
+      }
+      #cta {
+        margin-top: 54px;
+        padding: 24px 60px;
+        border-radius: 999px;
+        background: linear-gradient(180deg, #ffe26a 0%, var(--gold) 45%, var(--orange) 100%);
+        color: var(--navy);
+        font-size: 52px;
+        line-height: 1;
+        white-space: nowrap;
+        box-shadow: 0 18px 40px rgba(80, 25, 0, 0.4), inset 0 -4px 0 rgba(160, 80, 0, 0.35);
+        transform-origin: 50% 50%;
+      }
+      #weights {
+        margin-top: 28px;
+        font-size: 34px;
+        font-weight: 900;
+        letter-spacing: 0.14em;
+        color: var(--navy);
+        opacity: 0;
+      }
+      #end-right {
+        position: absolute;
+        left: 1052px;
+        top: 0;
+        width: 676px;
+        height: 1080px;
+      }
+      #pouchB {
+        left: 40px;
+        top: 250px;
+        width: 409px;
+        height: 580px;
+        z-index: 2;
+      }
+      #pack40B {
+        left: 428px;
+        top: 500px;
+        width: 234px;
+        height: 330px;
+        z-index: 1;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="intro" data-start="0" data-width="1920" data-height="1080" data-duration="20" data-fps="60">
+      <!-- shared SVG symbols -->
+      <svg width="0" height="0" style="position: absolute" aria-hidden="true">
+        <defs>
+          <radialGradient id="g-cluster" cx="35%" cy="30%" r="75%">
+            <stop offset="0" stop-color="#f9c96a" />
+            <stop offset="0.55" stop-color="#dd8c2c" />
+            <stop offset="1" stop-color="#a0501a" />
+          </radialGradient>
+          <linearGradient id="g-seed" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#b9c45a" />
+            <stop offset="0.5" stop-color="#8c9a3a" />
+            <stop offset="1" stop-color="#5f6d24" />
+          </linearGradient>
+          <linearGradient id="g-peanut" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#f0c27a" />
+            <stop offset="1" stop-color="#c98a3e" />
+          </linearGradient>
+          <linearGradient id="g-gold" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#ffe26a" />
+            <stop offset="0.5" stop-color="#ffc928" />
+            <stop offset="1" stop-color="#f28c18" />
+          </linearGradient>
+
+          <!-- gold line-art in the style of the pack pattern -->
+          <symbol id="la-peanut" viewBox="0 0 100 100" overflow="visible">
+            <g fill="none" stroke="#ffc928" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M24 54 c-3 -20 11 -33 26 -29 c7 2 10 8 18 8 c13 0 22 10 22 21 c0 13 -10 21 -22 21 c-8 0 -11 5 -18 5 c-15 0 -24 -11 -26 -26z" />
+              <path d="M31 44 q10 7 0 16 M40 38 q9 12 0 28 M51 36 q7 14 0 30 M62 37 q7 12 0 24 M73 42 q6 9 0 18" opacity="0.8" />
+            </g>
+          </symbol>
+          <symbol id="la-seed" viewBox="0 0 100 100" overflow="visible">
+            <g fill="none" stroke="#ffc928" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M50 8 c20 13 30 38 30 56 c0 17 -13 28 -30 28 c-17 0 -30 -11 -30 -28 c0 -18 10 -43 30 -56z" />
+              <path d="M50 22 c12 11 18 30 18 42 c0 10 -8 18 -18 18 c-10 0 -18 -8 -18 -18 c0 -12 6 -31 18 -42z" opacity="0.7" />
+              <path d="M50 30 V78" opacity="0.6" />
+            </g>
+          </symbol>
+          <symbol id="la-nut" viewBox="0 0 100 100" overflow="visible">
+            <g fill="none" stroke="#ffc928" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+              <ellipse cx="50" cy="50" rx="40" ry="25" />
+              <path d="M12 50 Q50 28 88 50 M12 50 Q50 72 88 50 M50 25 V75 M30 30 Q50 50 30 70 M70 30 Q50 50 70 70" opacity="0.75" />
+            </g>
+          </symbol>
+          <symbol id="la-star" viewBox="0 0 100 100" overflow="visible">
+            <path id="la-star-path" d="M50 6 L61.8 36.4 L94.2 38.2 L68.9 58.6 L77.2 90 L50 72.6 L22.8 90 L31.1 58.6 L5.8 38.2 L38.2 36.4 Z" fill="none" stroke="#ffc928" stroke-width="3" stroke-linejoin="round" />
+          </symbol>
+          <symbol id="la-star-fill" viewBox="0 0 100 100" overflow="visible">
+            <path d="M50 6 L61.8 36.4 L94.2 38.2 L68.9 58.6 L77.2 90 L50 72.6 L22.8 90 L31.1 58.6 L5.8 38.2 L38.2 36.4 Z" fill="url(#g-gold)" stroke="#f28c18" stroke-width="1.5" stroke-linejoin="round" />
+          </symbol>
+
+          <symbol id="sym-cluster" viewBox="0 0 100 100" overflow="visible">
+            <circle cx="50" cy="50" r="38" fill="url(#g-cluster)" />
+            <g fill="#e39a33" stroke="#a9581a" stroke-width="1.5">
+              <circle cx="88" cy="50" r="9" />
+              <circle cx="83" cy="69" r="8" />
+              <circle cx="69" cy="83" r="9" />
+              <circle cx="50" cy="88" r="8" />
+              <circle cx="31" cy="83" r="9" />
+              <circle cx="17" cy="69" r="8" />
+              <circle cx="12" cy="50" r="9" />
+              <circle cx="17" cy="31" r="8" />
+              <circle cx="31" cy="17" r="9" />
+              <circle cx="50" cy="12" r="8" />
+              <circle cx="69" cy="17" r="9" />
+              <circle cx="83" cy="31" r="8" />
+              <circle cx="40" cy="42" r="7" />
+              <circle cx="60" cy="58" r="8" />
+              <circle cx="62" cy="36" r="6" />
+              <circle cx="36" cy="62" r="6" />
+            </g>
+            <g fill="#7a3d10">
+              <circle cx="48" cy="30" r="2.4" />
+              <circle cx="70" cy="48" r="2.2" />
+              <circle cx="30" cy="52" r="2.4" />
+              <circle cx="52" cy="72" r="2.2" />
+              <circle cx="58" cy="50" r="1.8" />
+            </g>
+            <ellipse cx="36" cy="32" rx="12" ry="7" fill="#fff" opacity="0.28" transform="rotate(-30 36 32)" />
+          </symbol>
+
+          <symbol id="sym-peanut" viewBox="0 0 100 100" overflow="visible">
+            <path
+              d="M28 54 c-2 -18 10 -30 24 -26 c7 2 9 7 16 7 c12 0 20 9 20 19 c0 12 -9 19 -20 19 c-7 0 -9 5 -16 5 c-14 0 -23 -10 -24 -24z"
+              fill="url(#g-peanut)"
+              stroke="#a8702c"
+              stroke-width="2.5"
+              stroke-linejoin="round"
+            />
+            <path d="M34 46 q10 6 0 14 M42 40 q8 10 0 24 M52 38 q6 12 0 26 M62 38 q6 10 0 22 M72 42 q6 8 0 16" fill="none" stroke="#b9813a" stroke-width="1.8" stroke-linecap="round" opacity="0.9" />
+            <ellipse cx="40" cy="42" rx="7" ry="4" fill="#fff" opacity="0.25" transform="rotate(-20 40 42)" />
+          </symbol>
+
+          <symbol id="sym-seed" viewBox="0 0 100 100" overflow="visible">
+            <path d="M50 8 c20 12 30 38 30 56 c0 16 -13 28 -30 28 c-17 0 -30 -12 -30 -28 c0 -18 10 -44 30 -56z" fill="url(#g-seed)" stroke="#d2d978" stroke-width="3.5" stroke-linejoin="round" />
+            <path d="M50 22 c12 10 18 30 18 42 c0 10 -8 18 -18 18 c-10 0 -18 -8 -18 -18 c0 -12 6 -32 18 -42z" fill="none" stroke="#c7cf6a" stroke-width="1.6" opacity="0.8" />
+            <ellipse cx="42" cy="40" rx="5" ry="10" fill="#fff" opacity="0.22" transform="rotate(10 42 40)" />
+          </symbol>
+
+          <!-- gold outline icons -->
+          <symbol id="ico-protein" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="44" fill="none" stroke="url(#g-gold)" stroke-width="5" />
+            <g fill="url(#g-gold)">
+              <rect x="40" y="46" width="20" height="8" rx="2" />
+              <rect x="27" y="34" width="13" height="32" rx="4" />
+              <rect x="60" y="34" width="13" height="32" rx="4" />
+              <rect x="17" y="40" width="9" height="20" rx="3" />
+              <rect x="74" y="40" width="9" height="20" rx="3" />
+            </g>
+          </symbol>
+          <symbol id="ico-fibre" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="44" fill="none" stroke="url(#g-gold)" stroke-width="5" />
+            <g fill="none" stroke="url(#g-gold)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M50 78 V30" />
+              <path d="M50 62 c-14 0 -22 -8 -24 -20 c12 -2 22 6 24 20z" />
+              <path d="M50 62 c14 0 22 -8 24 -20 c-12 -2 -22 6 -24 20z" />
+              <path d="M50 46 c-10 0 -17 -6 -19 -16 c10 -1 17 5 19 16z" />
+              <path d="M50 46 c10 0 17 -6 19 -16 c-10 -1 -17 5 -19 16z" />
+            </g>
+          </symbol>
+          <symbol id="ico-clean" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="44" fill="none" stroke="url(#g-gold)" stroke-width="5" />
+            <g fill="none" stroke="url(#g-gold)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M42 24 H58 M45 24 V42 L30 68 c-3 6 1 10 7 10 H63 c6 0 10 -4 7 -10 L55 42 V24" />
+              <path d="M27 27 L73 73" stroke-width="6" />
+            </g>
+          </symbol>
+          <symbol id="ico-check" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="46" fill="url(#g-gold)" />
+            <path d="M28 52 L44 67 L72 36" fill="none" stroke="#121a6b" stroke-width="11" stroke-linecap="round" stroke-linejoin="round" />
+          </symbol>
+        </defs>
+      </svg>
+
+      <div id="camera">
+        <div id="punch">
+          <!-- background -->
+          <div id="bg" data-layout-ignore></div>
+          <div id="bg-glow" data-layout-ignore></div>
+          <div id="rays-wrap" data-layout-ignore><div id="rays"></div></div>
+          <div id="float-far" class="float-layer" data-layout-ignore></div>
+          <div id="float-near" class="float-layer" data-layout-ignore></div>
+          <div id="vignette" data-layout-ignore></div>
+
+          <!-- 1. hook 0–3 -->
+          <section id="s1" class="clip" data-start="0" data-duration="3.05" data-track-index="1">
+            <div id="s1-halo" data-layout-ignore></div>
+            <div id="s1-fly" data-layout-ignore></div>
+            <div class="center">
+              <h1 id="s1-h" class="headline">
+                <span class="line">Svačina,</span>
+                <span class="line">která zasytí.</span>
+              </h1>
+            </div>
+          </section>
+
+          <!-- product layer 3–14 -->
+          <section id="prod" class="clip" data-start="3" data-duration="11" data-track-index="2">
+            <div id="product">
+              <div id="pouchA" class="pouch-wrap"><img src="assets/pouch-150.png" alt="" /><div class="sweep sweep-150"><div class="sweep-bar" id="sweepA" data-layout-ignore></div></div></div>
+              <div id="pack40A" class="pouch-wrap"><img src="assets/pouch-40.png" alt="" /></div>
+              <div id="burst-field" data-layout-ignore></div>
+            </div>
+          </section>
+
+          <!-- 3. facts 7–14 -->
+          <section id="s3" class="clip" data-start="7" data-duration="7" data-track-index="3">
+            <div id="s3-halo" data-layout-ignore></div>
+            <div id="facts">
+              <div id="stage1" class="stage">
+                <div class="icon-big" id="icon1"><svg viewBox="0 0 100 100"><use href="#ico-protein" /></svg></div>
+                <div class="numline" id="numline1" data-layout-allow-overlap><span class="num" id="num1" data-layout-allow-overlap>0</span><span class="unit">g</span></div>
+                <div class="factword" id="word1" data-layout-allow-overlap>bílkovin</div>
+                <div class="per" id="per1">na 100 g</div>
+              </div>
+              <div id="stage2" class="stage">
+                <div class="icon-big" id="icon2"><svg viewBox="0 0 100 100"><use href="#ico-fibre" /></svg></div>
+                <div class="numline" id="numline2" data-layout-allow-overlap><span class="num" id="num2" data-layout-allow-overlap>0,0</span><span class="unit">g</span></div>
+                <div class="factword" id="word2" data-layout-allow-overlap>vlákniny</div>
+                <div class="per" id="per2">na 100 g</div>
+              </div>
+              <div id="stage3" class="stage">
+                <div class="icon-big" id="icon3"><svg viewBox="0 0 100 100"><use href="#ico-clean" /></svg></div>
+                <div class="factword" id="word3" data-layout-allow-overlap>Bez umělých barviv a&nbsp;konzervantů</div>
+              </div>
+
+              <div id="list">
+                <div class="row" id="row1" style="top: 0px">
+                  <div class="icon-sm"><svg viewBox="0 0 100 100"><use href="#ico-protein" /></svg></div>
+                  <div class="rowtext">22 g bílkovin <small>na 100 g</small></div>
+                  <div class="check" id="check1"><svg viewBox="0 0 100 100"><use href="#ico-check" /></svg></div>
+                </div>
+                <div class="row" id="row2" style="top: 110px">
+                  <div class="icon-sm"><svg viewBox="0 0 100 100"><use href="#ico-fibre" /></svg></div>
+                  <div class="rowtext">8,5 g vlákniny <small>na 100 g</small></div>
+                  <div class="check" id="check2"><svg viewBox="0 0 100 100"><use href="#ico-check" /></svg></div>
+                </div>
+                <div class="row" id="row3" style="top: 220px">
+                  <div class="icon-sm"><svg viewBox="0 0 100 100"><use href="#ico-clean" /></svg></div>
+                  <div class="rowtext">Bez umělých barviv a&nbsp;konzervantů</div>
+                  <div class="check" id="check3"><svg viewBox="0 0 100 100"><use href="#ico-check" /></svg></div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- 4. slogan 14–17 -->
+          <section id="s4" class="clip" data-start="14" data-duration="3" data-track-index="4">
+            <div id="s4-halo" data-layout-ignore></div>
+            <div class="center">
+              <div id="slogan" class="headline">
+                <div id="slog1" class="line">Křupe.</div>
+                <div id="slog2" class="line">Zasytí.</div>
+                <div id="slog3" class="line gold-text">Nic neskrývá.</div>
+                <div id="slog-sub">Křupavá směs oříšků a semínek.</div>
+              </div>
+            </div>
+          </section>
+
+          <!-- 5. end card 17–20 -->
+          <section id="s5" class="clip" data-start="17" data-duration="3" data-track-index="5">
+            <div id="s5-halo" data-layout-ignore></div>
+            <div id="end-left">
+              <div id="wordmark">
+                <span class="wl" id="wm1">Protein</span>
+                <span class="wl gold-text" id="wm2">CRUNCH</span>
+                <span class="wl" id="wm3">MIX</span>
+              </div>
+              <div id="cta">Měj energii vždy po ruce</div>
+              <div id="weights">150 g · 40 g</div>
+            </div>
+            <div id="end-right">
+              <div id="pouchB" class="pouch-wrap"><img src="assets/pouch-150.png" alt="" /><div class="sweep sweep-150"><div class="sweep-bar" id="sweepB" data-layout-ignore></div></div></div>
+              <div id="pack40B" class="pouch-wrap"><img src="assets/pouch-40.png" alt="" /></div>
+            </div>
+          </section>
+
+          <div id="flash" class="clip" data-start="14" data-duration="0.5" data-layout-ignore></div>
+
+          <!-- sound: small synthesised clicks, a crunch on the hook and the three beats, a chime on the end card -->
+          <audio id="sfx-crunch-1" src="assets/sfx/crunch.wav" data-start="0.55" data-volume="0.9"></audio>
+          <audio id="sfx-crunch-2" src="assets/sfx/crunch.wav" data-start="1.45" data-volume="0.45"></audio>
+          <audio id="sfx-thud-1" src="assets/sfx/thud.wav" data-start="3.82" data-volume="0.9"></audio>
+          <audio id="sfx-pop-1" src="assets/sfx/pop.wav" data-start="3.84" data-volume="0.5"></audio>
+          <audio id="sfx-sweep-1" src="assets/sfx/sweep.wav" data-start="4.4" data-volume="0.35"></audio>
+          <audio id="sfx-pop-2" src="assets/sfx/pop.wav" data-start="5.05" data-volume="0.55"></audio>
+          <audio id="sfx-tick-1" src="assets/sfx/tick.wav" data-start="7.5" data-volume="0.5"></audio>
+          <audio id="sfx-counter-1" src="assets/sfx/counter.wav" data-start="7.7" data-volume="0.4"></audio>
+          <audio id="sfx-tick-2" src="assets/sfx/tick.wav" data-start="9.95" data-volume="0.5"></audio>
+          <audio id="sfx-tick-3" src="assets/sfx/tick.wav" data-start="10.05" data-volume="0.4"></audio>
+          <audio id="sfx-counter-2" src="assets/sfx/counter.wav" data-start="10.15" data-volume="0.4"></audio>
+          <audio id="sfx-tick-4" src="assets/sfx/tick.wav" data-start="12.2" data-volume="0.5"></audio>
+          <audio id="sfx-tick-5" src="assets/sfx/tick.wav" data-start="12.35" data-volume="0.4"></audio>
+          <audio id="sfx-tick-6" src="assets/sfx/tick.wav" data-start="13.65" data-volume="0.4"></audio>
+          <audio id="sfx-hit-1" src="assets/sfx/hit.wav" data-start="14.0" data-volume="0.8"></audio>
+          <audio id="sfx-crunch-3" src="assets/sfx/crunch.wav" data-start="14.02" data-volume="0.7"></audio>
+          <audio id="sfx-hit-2" src="assets/sfx/hit.wav" data-start="14.5" data-volume="0.75"></audio>
+          <audio id="sfx-hit-3" src="assets/sfx/hit.wav" data-start="15.0" data-volume="0.8"></audio>
+          <audio id="sfx-thud-2" src="assets/sfx/thud.wav" data-start="17.75" data-volume="0.5"></audio>
+          <audio id="sfx-pop-3" src="assets/sfx/pop.wav" data-start="17.8" data-volume="0.55"></audio>
+          <audio id="sfx-sweep-2" src="assets/sfx/sweep.wav" data-start="17.9" data-volume="0.3"></audio>
+          <audio id="sfx-chime-1" src="assets/sfx/chime.mp3" data-start="18.05" data-volume="0.6"></audio>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      /* ---------- deterministic helpers ---------- */
+      const prand = (n) => {
+        const x = Math.sin(n * 127.1 + 311.7) * 43758.5453;
+        return x - Math.floor(x);
+      };
+
+      function starPath(cx, cy, R, r) {
+        const pts = [];
+        for (let i = 0; i < 10; i++) {
+          const a = -Math.PI / 2 + (i * Math.PI) / 5;
+          const rad = i % 2 === 0 ? R : r;
+          pts.push(`${(cx + rad * Math.cos(a)).toFixed(1)} ${(cy + rad * Math.sin(a)).toFixed(1)}`);
+        }
+        return "M" + pts.join(" L") + " Z";
+      }
+
+      /* ---------- pouch SVG (built in code, matches the pack) ---------- */
+      const BODY = "M50 30 H350 Q364 30 364 44 L380 518 Q381 540 359 540 H41 Q19 540 20 518 L36 44 Q36 30 50 30 Z";
+      const STAR = starPath(200, 398, 118, 52);
+
+      function pouchSVG(p, weight) {
+        const wm = (extra) => `
+          <text x="200" y="152" font-size="58" fill="#fff" ${extra}>Protein</text>
+          <text x="200" y="216" font-size="72" fill="url(#${p}-gold)" ${extra}>CRUNCH</text>
+          <text x="200" y="274" font-size="58" fill="#fff" ${extra}>MIX</text>`;
+        const wmShadow = `
+          <text x="202" y="155" font-size="58" fill="#0a1050" opacity="0.5" data-layout-ignore aria-hidden="true">Protein</text>
+          <text x="202" y="219" font-size="72" fill="#0a1050" opacity="0.5" data-layout-ignore aria-hidden="true">CRUNCH</text>
+          <text x="202" y="277" font-size="58" fill="#0a1050" opacity="0.5" data-layout-ignore aria-hidden="true">MIX</text>`;
+        const clusters = [
+          [200, 398, 104],
+          [146, 352, 70],
+          [258, 350, 66],
+          [158, 442, 64],
+          [246, 446, 72],
+          [200, 318, 56],
+          [118, 404, 50],
+          [286, 408, 52],
+          [200, 480, 52],
+        ]
+          .map(([x, y, s], i) => `<use href="#sym-cluster" x="${x - s / 2}" y="${y - s / 2}" width="${s}" height="${s}" transform="rotate(${(i * 37) % 360} ${x} ${y})"/>`)
+          .join("");
+        const seeds = [
+          [262, 392, 30, 40],
+          [138, 392, 28, -30],
+          [214, 450, 26, 70],
+        ]
+          .map(([x, y, s, r]) => `<use href="#sym-seed" x="${x - s / 2}" y="${y - s / 2}" width="${s}" height="${s}" transform="rotate(${r} ${x} ${y})"/>`)
+          .join("");
+        const dashes = [
+          [112, 200, -30],
+          [96, 222, -20],
+          [120, 244, -40],
+          [292, 196, 30],
+          [306, 222, 20],
+          [288, 246, 40],
+          [150, 118, 60],
+          [250, 118, -60],
+        ]
+          .map(([x, y, r]) => `<rect x="${x - 9}" y="${y - 3}" width="18" height="6" rx="3" fill="url(#${p}-gold)" transform="rotate(${r} ${x} ${y})"/>`)
+          .join("");
+        return `
+<svg class="pouch-svg" viewBox="0 0 400 560" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="${p}-body" x1="0" y1="0" x2="1" y2="0.2">
+      <stop offset="0" stop-color="#1a28a0"/><stop offset="0.3" stop-color="#2a3ccc"/><stop offset="0.62" stop-color="#1f2fb0"/><stop offset="1" stop-color="#121a6b"/>
+    </linearGradient>
+    <linearGradient id="${p}-gold" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffe26a"/><stop offset="0.5" stop-color="#ffc928"/><stop offset="1" stop-color="#f28c18"/>
+    </linearGradient>
+    <linearGradient id="${p}-sheen" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset="0.5" stop-color="#fff" stop-opacity="0.22"/><stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="${p}-sweep" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset="0.5" stop-color="#fff8d6" stop-opacity="0.95"/><stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </linearGradient>
+    <pattern id="${p}-nuts" width="124" height="124" patternUnits="userSpaceOnUse" patternTransform="rotate(-16)">
+      <g fill="none" stroke="#ffc928" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" opacity="0.82">
+        <ellipse cx="32" cy="30" rx="24" ry="15"/>
+        <path d="M10 30 Q32 16 54 30 M10 30 Q32 44 54 30 M32 15 V45 M20 20 Q32 30 20 40 M44 20 Q32 30 44 40"/>
+        <path d="M66 84 c-10 -7 -24 1 -22 13 c2 11 15 13 22 8 c6 -4 14 4 21 0 c9 -6 3 -21 -8 -21 c-7 0 -9 2 -13 0z"/>
+        <path d="M70 84 q6 6 0 14 M80 86 q5 5 0 12"/>
+        <ellipse cx="100" cy="30" rx="9" ry="16" transform="rotate(28 100 30)"/>
+        <path d="M100 16 V44" transform="rotate(28 100 30)"/>
+        <path d="M110 100 l7 -4 M14 96 l-6 6 M62 12 l5 5 M90 60 l6 0" stroke-width="2.4"/>
+      </g>
+    </pattern>
+    <clipPath id="${p}-bodyclip"><path d="${BODY}"/></clipPath>
+    <clipPath id="${p}-wmclip">${wm('text-anchor="middle" font-family="Nunito" font-weight="900"')}</clipPath>
+    <clipPath id="${p}-starclip"><path d="${STAR}"/></clipPath>
+  </defs>
+
+  <path d="${BODY}" fill="url(#${p}-body)"/>
+  <path d="${BODY}" fill="url(#${p}-nuts)"/>
+  <g clip-path="url(#${p}-bodyclip)">
+    <rect x="30" y="20" width="110" height="540" fill="url(#${p}-sheen)" transform="skewX(-8)"/>
+    <rect x="0" y="520" width="400" height="40" fill="#0d1458" opacity="0.55"/>
+  </g>
+  <path d="${BODY}" fill="none" stroke="#5d6ee6" stroke-width="2" opacity="0.55"/>
+  <path d="M36 44 Q36 30 50 30 H350 Q364 30 364 44 L366 74 H34 Z" fill="#2f41d0" opacity="0.5"/>
+  <path d="M34 74 H366" stroke="#0d1458" stroke-width="2" opacity="0.6"/>
+  <rect x="52" y="52" width="296" height="10" rx="5" fill="#4a5ce8"/>
+  <path d="M60 57 H340" stroke="#121a6b" stroke-width="2" opacity="0.7"/>
+  <path d="M30 84 l14 8 l-14 8z M370 84 l-14 8 l14 8z" fill="#0d1458" opacity="0.8"/>
+
+  <g font-family="Nunito" font-weight="900" text-anchor="middle" transform="translate(200 0) skewX(-7) translate(-200 0)">
+    ${wmShadow}
+    ${wm("data-layout-allow-overlap")}
+    <g clip-path="url(#${p}-wmclip)">
+      <rect id="${p}-sweepRect" x="-300" y="80" width="150" height="220" fill="url(#${p}-sweep)" transform="skewX(-22)"/>
+    </g>
+  </g>
+  ${dashes}
+
+  <g clip-path="url(#${p}-starclip)">
+    <rect x="60" y="260" width="280" height="280" fill="#b46a1c"/>
+    <rect x="60" y="260" width="280" height="280" fill="url(#${p}-body)" opacity="0.15"/>
+    ${clusters}
+    ${seeds}
+  </g>
+  <path d="${STAR}" fill="none" stroke="#0d1458" stroke-width="14" opacity="0.6" stroke-linejoin="round"/>
+  <path d="${STAR}" fill="none" stroke="url(#${p}-gold)" stroke-width="9" stroke-linejoin="round"/>
+
+  <text x="200" y="532" font-family="Nunito" font-weight="700" font-size="19" fill="#fff" text-anchor="middle">Hmotnost: ${weight}</text>
+</svg>`;
+      }
+
+      /* ---------- pieces ---------- */
+      const KINDS = ["cluster", "cluster", "peanut", "seed", "cluster", "seed", "peanut"];
+      function makePiece(kind, size) {
+        const el = document.createElement("div");
+        el.className = "pc";
+        el.style.width = size + "px";
+        el.style.height = size + "px";
+        el.innerHTML = `<svg viewBox="0 0 100 100"><use href="#sym-${kind}"/></svg>`;
+        return el;
+      }
+
+      /* ---------- build ---------- */
+
+      // floating background pieces (parallax)
+      const farLayer = document.getElementById("float-far");
+      const nearLayer = document.getElementById("float-near");
+      const farPieces = [];
+      const nearPieces = [];
+      const LA = ["la-peanut", "la-star", "la-seed", "la-nut", "la-star", "la-peanut", "la-seed", "la-star"];
+      function makeLine(kind, size) {
+        const el = document.createElement("div");
+        el.className = "la";
+        el.style.width = size + "px";
+        el.style.height = size + "px";
+        el.innerHTML = `<svg viewBox="0 0 100 100"><use href="#${kind}"/></svg>`;
+        return el;
+      }
+      function makeSpark(size) {
+        const el = document.createElement("div");
+        el.className = "spark";
+        el.style.width = size + "px";
+        el.style.height = size + "px";
+        return el;
+      }
+      // far layer: an even scatter over the whole frame
+      for (let i = 0; i < 22; i++) {
+        const el = makeLine(LA[i % LA.length], 70 + prand(i * 7 + 2) * 100);
+        const col = i % 6, row = Math.floor(i / 6);
+        el.style.left = Math.round(col * 320 + prand(i * 3 + 1) * 220) + "px";
+        el.style.top = Math.round(row * 270 + prand(i * 5 + 9) * 200) + "px";
+        el.style.transform = "";
+        farLayer.appendChild(el);
+        farPieces.push(el);
+      }
+      // near layer: bigger pieces hugging the left and right edges
+      for (let i = 0; i < 12; i++) {
+        const side = i % 2 === 0;
+        const el = makeLine(LA[(i + 3) % LA.length], 150 + prand(i * 11 + 4) * 150);
+        el.style.left = Math.round(side ? -80 + prand(i * 13 + 2) * 330 : 1500 + prand(i * 13 + 2) * 380) + "px";
+        el.style.top = Math.round(-80 + prand(i * 17 + 6) * 1120) + "px";
+        nearLayer.appendChild(el);
+        nearPieces.push(el);
+      }
+
+      // scene 1 fly-through pieces
+      const fly = document.getElementById("s1-fly");
+      const flyPieces = [];
+      const FLY_N = 36;
+      for (let i = 0; i < FLY_N; i++) {
+        const size = 50 + prand(i * 19 + 3) * 90;
+        const kind = i % 3 === 0 ? "la-star-fill" : LA[(i * 5) % LA.length];
+        const el = makeLine(kind, size);
+        el.classList.add("pc");
+        el.style.marginLeft = -size / 2 + "px";
+        el.style.marginTop = -size / 2 + "px";
+        el.style.opacity = i % 3 === 0 ? "0.95" : "0.7";
+        fly.appendChild(el);
+        flyPieces.push(el);
+      }
+
+      // burst particles (scene 2)
+      const field = document.getElementById("burst-field");
+      const BURST_N = 44;
+      const burst = [];
+      const palette = ["#ffc928", "#f28c18", "#e39a33", "#a9581a", "#fff0c0"];
+      for (let i = 0; i < BURST_N; i++) {
+        let el;
+        if (i % 4 === 0) {
+          const size = 22 + prand(i * 23 + 5) * 34;
+          el = makeLine("la-star-fill", size);
+          el.classList.add("particle");
+          el.style.marginLeft = -size / 2 + "px";
+          el.style.marginTop = -size / 2 + "px";
+          el.style.borderRadius = "0";
+        } else {
+          el = document.createElement("div");
+          el.className = "particle";
+          const size = 6 + prand(i * 3 + 1) * 22;
+          el.style.width = size + "px";
+          el.style.height = size * (0.7 + prand(i * 5 + 2) * 0.5) + "px";
+          el.style.borderRadius = prand(i * 7 + 1) > 0.5 ? "50%" : "30% 60% 40% 70%";
+          el.style.marginLeft = -size / 2 + "px";
+          el.style.marginTop = -size / 2 + "px";
+          el.style.background = palette[i % palette.length];
+        }
+        field.appendChild(el);
+        const ang = -Math.PI / 2 + (prand(i * 7 + 2) - 0.5) * Math.PI * 1.7;
+        const speed = 700 + prand(i * 11 + 3) * 900;
+        burst.push({
+          el,
+          vx: Math.cos(ang) * speed,
+          vy: Math.sin(ang) * speed - 250,
+          spin: (prand(i * 13 + 4) - 0.5) * 720,
+        });
+      }
+
+      /* ---------- timeline ---------- */
+      function build() {
+        const tl = gsap.timeline({ paused: true });
+        const HOLD = 18.5; // everything stops moving here; final frame holds to 20
+
+        // --- global: slow camera push, rays, parallax drift ---
+        tl.fromTo("#camera", { scale: 1 }, { scale: 1.05, duration: HOLD, ease: "none" }, 0);
+        tl.fromTo("#rays", { rotation: -4 }, { rotation: 3, duration: HOLD, ease: "none" }, 0);
+        farPieces.forEach((el, i) => {
+          tl.fromTo(el, { y: 26, rotation: -6 + prand(i) * 12 }, { y: -26, rotation: 6 - prand(i) * 12, duration: HOLD, ease: "none" }, 0);
+        });
+        nearPieces.forEach((el, i) => {
+          tl.fromTo(el, { y: 70, rotation: -10 + prand(i + 50) * 20 }, { y: -70, rotation: 10 - prand(i + 50) * 20, duration: HOLD, ease: "none" }, 0);
+        });
+
+        // --- 1. hook (0–3) ---
+        flyPieces.forEach((el, i) => {
+          const ang = prand(i * 31 + 7) * Math.PI * 2;
+          const dist = 1100 + prand(i * 37 + 1) * 500;
+          const start = (i / FLY_N) * 2.1;
+          const dur = 0.9 + prand(i * 41 + 2) * 0.4;
+          tl.fromTo(
+            el,
+            { x: Math.cos(ang) * 90, y: Math.sin(ang) * 60, scale: 0.12, rotation: prand(i) * 360 },
+            { x: Math.cos(ang) * dist, y: Math.sin(ang) * dist * 0.7, scale: 2.8, rotation: prand(i) * 360 + 140, duration: dur, ease: "power2.in" },
+            start,
+          );
+          tl.fromTo(el, { opacity: 0 }, { opacity: 1, duration: 0.25, ease: "power1.out" }, start);
+        });
+        tl.fromTo("#s1-halo", { opacity: 0 }, { opacity: 1, duration: 0.4 }, 0.45);
+        tl.fromTo("#s3-halo", { opacity: 0 }, { opacity: 1, duration: 0.6 }, 7.2);
+        tl.fromTo("#s5-halo", { opacity: 0 }, { opacity: 1, duration: 0.6 }, 17.1);
+        tl.fromTo("#s1-h", { scale: 1.22, y: 36, opacity: 0 }, { scale: 1, y: 0, opacity: 1, duration: 0.7, ease: "power3.out" }, 0.55);
+        tl.fromTo("#s1-h", { scale: 1, opacity: 1 }, { scale: 1.06, opacity: 0, duration: 0.42, ease: "power2.inOut", immediateRender: false }, 2.58);
+        tl.fromTo("#s1-halo", { opacity: 1 }, { opacity: 0, duration: 0.4, immediateRender: false }, 2.6);
+
+        // --- 2. reveal (3–7) ---
+        tl.fromTo("#pouchA", { y: 1000, rotation: -8 }, { y: 0, rotation: 0, duration: 1.05, ease: "power3.out" }, 3.0);
+
+        // crumb burst when the pouch lands: ballistic, pure function of T
+        const FLIGHT = 1.4;
+        const G = 1900;
+        const bT = { T: 0 };
+        tl.to(
+          bT,
+          {
+            T: 1,
+            duration: FLIGHT,
+            ease: "none",
+            onUpdate: () => {
+              const t = bT.T * FLIGHT;
+              const fade = bT.T < 0.55 ? 1 : 1 - (bT.T - 0.55) / 0.45;
+              for (const p of burst) {
+                const x = p.vx * t;
+                const y = p.vy * t + 0.5 * G * t * t;
+                gsap.set(p.el, { x, y, rotation: p.spin * t, opacity: bT.T === 0 || bT.T >= 1 ? 0 : fade });
+              }
+            },
+          },
+          3.72,
+        );
+
+        // gold light sweep over the wordmark
+        tl.fromTo("#sweepA", { xPercent: -140, rotation: 18 }, { xPercent: 400, rotation: 18, duration: 0.85, ease: "power2.inOut" }, 4.35);
+
+        // 40 g pack slides in on the right, behind
+        tl.fromTo("#pack40A", { x: 620, rotation: 7, opacity: 0 }, { x: 0, rotation: 0, opacity: 1, duration: 0.8, ease: "power3.out" }, 5.0);
+
+        // --- 3. facts (7–14) ---
+        tl.fromTo("#product", { x: 0, scale: 1 }, { x: -560, scale: 0.9, duration: 0.85, ease: "power3.inOut", immediateRender: false }, 7.0);
+
+        const STAGE_CY = 640; // stage centre y (top 390 + 250)
+        const ROW_H = 100;
+        const listTop = 110;
+        const rowCenter = (i) => listTop + i * 110 + ROW_H / 2;
+
+        function bigFact(n, at, count) {
+          const stage = `#stage${n}`;
+          tl.fromTo(`#icon${n}`, { scale: 0, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.5, ease: "back.out(1.6)" }, at);
+          if (count) {
+            const state = { v: 0 };
+            const numEl = document.getElementById(`num${n}`);
+            tl.fromTo(`#numline${n}`, { y: 50, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, ease: "power3.out" }, at + 0.1);
+            tl.fromTo(`#word${n}`, { y: 50, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, ease: "power3.out" }, at + 0.18);
+            tl.to(
+              state,
+              {
+                v: count.to,
+                duration: 1.3,
+                ease: "power3.out",
+                onUpdate: () => {
+                  numEl.textContent = count.dec ? state.v.toFixed(1).replace(".", ",") : String(Math.round(state.v));
+                },
+              },
+              at + 0.2,
+            );
+            tl.fromTo(`#num${n}`, { scale: 0.6 }, { scale: 1, duration: 1.3, ease: "power3.out" }, at + 0.2);
+            tl.fromTo(`#per${n}`, { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" }, at + 0.75);
+          } else {
+            tl.fromTo(`#word${n}`, { y: 60, opacity: 0 }, { y: 0, opacity: 1, duration: 0.55, ease: "power3.out" }, at + 0.12);
+          }
+          return stage;
+        }
+
+        function shrinkToRow(n, at) {
+          const dy = rowCenter(n - 1) - STAGE_CY;
+          tl.fromTo(`#stage${n}`, { y: 0, scale: 1 }, { y: dy, scale: 0.28, duration: 0.45, ease: "power3.inOut", immediateRender: false }, at);
+          tl.fromTo(`#stage${n}`, { opacity: 1 }, { opacity: 0, duration: 0.12, ease: "power2.in", immediateRender: false }, at + 0.3);
+          tl.fromTo(`#row${n}`, { scale: 0.7, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.35, ease: "power3.out" }, at + 0.4);
+          tl.fromTo(`#check${n}`, { scale: 0, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.45, ease: "back.out(1.6)" }, at + 0.5);
+        }
+
+        bigFact(1, 7.5, { to: 22, dec: false });
+        shrinkToRow(1, 9.55);
+        bigFact(2, 9.95, { to: 8.5, dec: true });
+        shrinkToRow(2, 11.85);
+        bigFact(3, 12.2, null);
+        shrinkToRow(3, 13.15);
+        // the finished checklist settles into the middle of the right column
+        tl.fromTo("#list", { y: 0 }, { y: 270, duration: 0.42, ease: "power3.inOut", immediateRender: false }, 13.4);
+        tl.fromTo("#facts", { opacity: 1 }, { opacity: 0, duration: 0.3, ease: "power2.in", immediateRender: false }, 13.7);
+        tl.fromTo("#s3-halo", { opacity: 1 }, { opacity: 0, duration: 0.3, immediateRender: false }, 13.7);
+        tl.fromTo("#product", { opacity: 1 }, { opacity: 0, duration: 0.3, ease: "power2.in", immediateRender: false }, 13.7);
+
+        // --- 4. punch-in slogan (14–17) ---
+        tl.fromTo("#punch", { scale: 1 }, { scale: 1.06, duration: 0.5, ease: "power3.out" }, 14.0);
+        tl.fromTo("#flash", { opacity: 0.45 }, { opacity: 0, duration: 0.45, ease: "power2.out" }, 14.0);
+        tl.fromTo("#s4-halo", { opacity: 0 }, { opacity: 1, duration: 0.4 }, 14.0);
+        tl.fromTo("#slog1", { scale: 1.3, y: 40, opacity: 0 }, { scale: 1, y: 0, opacity: 1, duration: 0.6, ease: "power3.out" }, 14.0);
+        tl.fromTo("#slog2", { scale: 1.3, y: 40, opacity: 0 }, { scale: 1, y: 0, opacity: 1, duration: 0.6, ease: "power3.out" }, 14.5);
+        tl.fromTo("#slog3", { scale: 1.3, y: 40, opacity: 0 }, { scale: 1, y: 0, opacity: 1, duration: 0.6, ease: "power3.out" }, 15.0);
+        tl.fromTo("#slog-sub", { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.55, ease: "power3.out" }, 15.65);
+        tl.fromTo(["#slog1", "#slog2", "#slog3", "#slog-sub"], { y: 0, opacity: 1 }, { y: -40, opacity: 0, duration: 0.4, ease: "power2.inOut", stagger: 0.05, immediateRender: false }, 16.5);
+        tl.fromTo("#punch", { scale: 1.06 }, { scale: 1, duration: 0.5, ease: "power2.inOut", immediateRender: false }, 16.5);
+        tl.fromTo("#s4-halo", { opacity: 1 }, { opacity: 0, duration: 0.3, immediateRender: false }, 16.7);
+
+        // --- 5. end card (17–20), still from 18.5 ---
+        tl.fromTo("#pouchB", { y: 520, rotation: -5, opacity: 0 }, { y: 0, rotation: 0, opacity: 1, duration: 0.9, ease: "power3.out" }, 17.0);
+        tl.fromTo("#pack40B", { y: 420, rotation: 5, opacity: 0 }, { y: 0, rotation: 0, opacity: 1, duration: 0.85, ease: "power3.out" }, 17.18);
+        tl.fromTo("#wm1", { x: -90, opacity: 0 }, { x: 0, opacity: 1, duration: 0.5, ease: "power3.out" }, 17.2);
+        tl.fromTo("#wm2", { x: -110, opacity: 0 }, { x: 0, opacity: 1, duration: 0.55, ease: "power3.out" }, 17.32);
+        tl.fromTo("#wm3", { x: -90, opacity: 0 }, { x: 0, opacity: 1, duration: 0.5, ease: "power3.out" }, 17.44);
+        tl.fromTo("#sweepB", { xPercent: -140, rotation: 18 }, { xPercent: 400, rotation: 18, duration: 0.75, ease: "power2.inOut" }, 17.9);
+        tl.fromTo("#cta", { scale: 0.6, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.45, ease: "power4.out" }, 17.8);
+        tl.fromTo("#weights", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.35, ease: "power2.out" }, 18.1);
+
+        return tl;
+      }
+
+      document.fonts.ready.then(() => {
+        const tl = build();
+        window.__timelines["intro"] = tl;
+        if (window.__hfForceTimelineRebind) window.__hfForceTimelineRebind();
+      });
+    </script>
+  </body>
+</html>
